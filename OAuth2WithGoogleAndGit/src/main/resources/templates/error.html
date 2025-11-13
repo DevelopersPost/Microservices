@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - OAuth2 Demo</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.2.0/css/bootstrap.min.css}"/>
+    <style>
+        body {
+            padding-top: 50px;
+            background-color: #f5f5f5;
+        }
+        .error-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .error-header {
+            color: #a94442;
+            border-bottom: 1px solid #ebccd1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .debug-info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #5bc0de;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-container">
+            <div class="error-header">
+                <h2><i class="glyphicon glyphicon-warning-sign"></i> Error <span th:if="${errorCode}" th:text="'(' + ${errorCode} + ')'"></span></h2>
+            </div>
+            
+            <div class="alert alert-danger">
+                <h4 th:text="${errorMessage ?: 'An unexpected error occurred'}">An error occurred</h4>
+                <p th:if="${errorDetail}" class="mt-3">
+                    <strong>Details:</strong> <span th:text="${errorDetail}"></span>
+                </p>
+                <p th:if="${exception}" class="mt-3">
+                    <strong>Technical Details:</strong>
+                    <code th:text="${exception}" class="d-block mt-1"></code>
+                </p>
+            </div>
+            
+            <div class="text-center">
+                <a th:href="@{/}" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-home"></i> Return to Home
+                </a>
+            </div>
+            
+            <!-- Debug information (only shown in development) -->
+            <div th:if="${@environment.acceptsProfiles('dev', 'local')}" class="debug-info">
+                <h4><i class="glyphicon glyphicon-console"></i> Debug Information</h4>
+                
+                <div th:if="${#httpServletRequest.parameterMap}" class="mt-3">
+                    <h5>Request Parameters:</h5>
+                    <pre th:text="${#maps.toString(#httpServletRequest.parameterMap, ' = ', '
+')}">No parameters</pre>
+                </div>
+                
+                <div th:if="${errorAttributes}" class="mt-3">
+                    <h5>Error Attributes:</h5>
+                    <pre th:text="${#maps.toString(errorAttributes, ' = ', '
+')}">No error attributes</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/webjars/jquery/2.1.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.2.0/js/bootstrap.min.js}"></script>
+</body>
+</html>

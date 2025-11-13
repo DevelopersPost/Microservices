@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>OAuth2 Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .btn {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-github {
+            background: #24292e;
+        }
+        .btn-google {
+            background: #db4437;
+        }
+        .btn-logout {
+            background: #dc3545;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <script>
+        // Clear browser cache on page load
+        window.onload = function() {
+            if (performance.navigation.type === 1) {
+                // Page was refreshed
+                if (window.location.search.includes('logout') || window.location.search.includes('error')) {
+                    // Clear the URL parameters after a short delay
+                    setTimeout(function() {
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }, 3000);
+                }
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Logged Out State -->
+        <div sec:authorize="!isAuthenticated()">
+            <h1>Welcome to OAuth2 Demo</h1>
+            
+            <!-- Display logout message if any -->
+            <div th:if="${param.logout}" class="message success">
+                <p>You have been successfully logged out.</p>
+            </div>
+            
+            <!-- Display error message if any -->
+            <div th:if="${param.error}" class="message error">
+                <p th:if="${session.SPRING_SECURITY_LAST_EXCEPTION}" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}">Error during authentication</p>
+                <p th:unless="${session.SPRING_SECURITY_LAST_EXCEPTION}">Error during authentication. Please try again.</p>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <h2>Please sign in with one of the following providers:</h2>
+                <div style="margin: 25px 0;">
+                    <a href="/oauth2/authorization/github" class="btn btn-github">
+                        Sign in with GitHub
+                    </a>
+                    <a href="/oauth2/authorization/google" class="btn btn-google">
+                        Sign in with Google
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logged In State - Only shown when user is authenticated -->
+        <div sec:authorize="isAuthenticated()">
+            <div th:if="${userName != null and (param.logout == null or !param.logout)}">
+                <h1>Welcome, <span th:text="${userName}">User</span>!</h1>
+                <div style="margin: 30px 0;">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-logout">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
