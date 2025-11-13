@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+    <div layout:fragment="content" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">OIDC User Profile</h3>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <img th:if="${avatar}" 
+                                 th:src="${avatar}" 
+                                 class="rounded-circle border border-4 border-primary" 
+                                 width="150" 
+                                 height="150"
+                                 onerror="this.onerror=null; this.src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';">
+                        </div>
+                        <h3 class="h4">
+                            Hello, <span th:text="${name}">User</span>!
+                        </h3>
+                        
+                        <div class="card mt-4">
+                            <div class="card-body text-start">
+                                <div class="mb-3">
+                                    <h6 class="text-muted mb-1">Email</h6>
+                                    <p class="mb-0">
+                                        <span th:text="${email}"></span>
+                                        <span th:if="${emailVerified}" class="badge bg-success ms-2">Verified</span>
+                                        <span th:unless="${emailVerified}" class="badge bg-warning text-dark ms-2">Not Verified</span>
+                                    </p>
+                                </div>
+                                <div class="mb-3" th:if="${name}">
+                                    <h6 class="text-muted mb-1">Full Name</h6>
+                                    <p class="mb-0" th:text="${name}"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="text-muted mb-1">ID Token</h6>
+                                    <div class="p-2 bg-light rounded">
+                                        <small class="text-muted d-block mb-1">(truncated for security)</small>
+                                        <code th:text="${#strings.abbreviate(idToken, 30)}" class="text-break"></code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="/" class="btn btn-primary">Back to Home</a>
+                            <form action="/logout" method="post" class="d-inline ms-2">
+                                <button type="submit" class="btn btn-outline-danger">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

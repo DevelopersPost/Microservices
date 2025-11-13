@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>OIDC Demo</title>
+</head>
+<body>
+    <div layout:fragment="content" class="text-center">
+        <h1 class="mb-4">Welcome to OIDC Demo</h1>
+        <p class="lead">This is a demo application showing OpenID Connect (OIDC) login with Google</p>
+        <div sec:authorize="isAuthenticated()">
+            <p>You are logged in. <a href="/user" class="btn btn-primary">View your profile</a></p>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <p>Please <a href="/login" class="btn btn-primary"><i class="bi bi-google me-2"></i> Login with Google</a> to continue</p>
+        </div>
+    </div>
+</body>
+</html>
